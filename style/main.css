@@ -517,6 +517,19 @@ hr {
   line-height: 42px;
   margin-bottom: 0; }
 
+.login-button{
+  display: inline-block;
+  background: #8f7a66;
+  border-radius: 3px;
+  padding: 0 20px;
+  text-decoration: none;
+  color: #f9f6f2;
+  width: 60px;
+  height: 40px;
+  line-height: 42px;
+  display: block;
+  text-align: center;
+  float: none; }
 .restart-button {
   display: inline-block;
   background: #8f7a66;
