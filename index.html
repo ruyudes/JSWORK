@@ -38,6 +38,18 @@
         mini_login.style.display = "none";
         cover.style.display = "none";
     }
+	 function validate(){
+        //var username = document.getElementsById("username");//username为id值
+        //var password = document.getElementsById("password");//document是一个HTML 
+    //DOM对象,代表当前文档
+     if($('uname' == "admin") && $('pwd') == "123"){
+           return true;
+     }
+     else {
+	 alert("请输入正确信息");
+       return false;
+	   } 
+    }
 
     /* 移动登录窗口 */
     function moveLogin(event){
@@ -68,9 +80,60 @@
             moveable = false;
         }
     }
-};
-</script>
+	document.getElementById("btn_showrank").onclick = shogMinRank;
+    document.getElementById("close_minirank").onclick = closeRank;
+    document.getElementById("firstLine2").onmousedown = moveRank;
+    /* 显示排行窗口 */
+    function shogMinRank(){
+        var mini_rank = document.getElementsByClassName("mini_rank")[0];
+        var cover = document.getElementsByClassName("cover")[0];
+        mini_rank.style.display = "block";
+        cover.style.display = "block";
+        
+        mini_rank.style.left = (document.body.scrollWidth - mini_rank.scrollWidth) / 2 + "px";
+        mini_rank.style.top = (document.body.scrollHeight - mini_rank.scrollHeight) / 2 + "px";
+    }
 
+    /* 关闭排行窗口 */
+    function closeRank(){
+        var mini_rank = document.getElementsByClassName("mini_rank")[0];
+        var cover = document.getElementsByClassName("cover")[0];
+        mini_rank.style.display = "none";
+        cover.style.display = "none";
+    }
+
+    /* 移动排行窗口 */
+    function moveRank(event){
+        var moveable = true;
+
+        //获取事件源
+        event = event ? event : window.event;
+        var clientX = event.clientX;
+        var clientY = event.clientY;
+        
+        var mini_rank = document.getElementById("mini_rank");
+        console.log(mini_rank);
+        var top = parseInt(mini_rank.style.top);
+        var left = parseInt(mini_rank.style.left);//鼠标拖动
+        document.onmousemove = function(event){
+            if(moveable){
+                event = event ? event : window.event;
+                var y = top + event.clientY - clientY;
+                var x = left + event.clientX - clientX;
+                if(x>0 && y>0){
+                    mini_rank.style.top = y + "px";
+                    mini_rank.style.left = x + "px";
+                }
+            }
+        }
+        //鼠标弹起
+        document.onmouseup = function(){
+            moveable = false;
+        }
+    }
+};
+
+</script>
 <style>    
     /* 弹出 样式 */
     .mini_login{
@@ -135,7 +198,51 @@
         background-color:#000;
         opacity:0.3;
     }
+	/* 排行榜弹出 样式 */
+    .mini_rank{
+        display:none;
+        position:absolute;
+        z-index:2;
+        background:white;
+    }
+    .mini_rank .item{
+        width:320px;
+        margin:0 auto;
+        height:48px;
+        line-height:48px;
+        padding:0 20px;
+    }
+    /* 排行榜第一行*/
+    .mini_rank .firstLine2{
+        color:#666;
+        background:#f7f7f7;
+        font-size:18px;
+        font-weight:bold;
+        cursor:move;
+    }
+    .mini_rank .item .rank_close{
+        display:inline-block;
+        float:right;
+        cursor:pointer;
+    }
+    
+    
+    /* 遮罩层样式 */
+    .cover1{
+        display:none;
+        width:100%;
+        height:100%;
+        position:absolute;
+        top:0;
+        left:0;
+        z-index:1;
+        background-color:#000;
+        opacity:0.3;
+    }
+	
+
 </style>
+
 </head>
 <body>
   <div class="container">
@@ -148,6 +255,7 @@
     </div>
 	 <div class="above-above-game">
 	  <a href="javascript:void(0)" class="login-button" id="btn_showlogin">登录</a>
+	  <a class="paihang-button" id="btn_showrank" >排行榜</a>
     </div>
 
     <div class="above-game">
@@ -170,20 +278,31 @@
           <div class="grid-cell"></div>
           <div class="grid-cell"></div>
           <div class="grid-cell"></div>
+		  <div class="grid-cell"></div>
         </div>
         <div class="grid-row">
           <div class="grid-cell"></div>
           <div class="grid-cell"></div>
           <div class="grid-cell"></div>
           <div class="grid-cell"></div>
+		  <div class="grid-cell"></div>
         </div>
         <div class="grid-row">
           <div class="grid-cell"></div>
           <div class="grid-cell"></div>
           <div class="grid-cell"></div>
           <div class="grid-cell"></div>
+		  <div class="grid-cell"></div>
         </div>
         <div class="grid-row">
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+		  <div class="grid-cell"></div>
+        </div>
+		<div class="grid-row">
+          <div class="grid-cell"></div>
           <div class="grid-cell"></div>
           <div class="grid-cell"></div>
           <div class="grid-cell"></div>
@@ -210,28 +329,53 @@
   <script src="js/local_storage_manager.js"></script>
   <script src="js/game_manager.js"></script>
   <script src="js/application.js"></script>
+  <script src="js/ranking.js"></script>
+<!-- 遮罩层 -->
+<div class="cover"></div>
   <!-- 弹出登录小窗口 -->
 <div class="mini_login" id="mini_login">
-    <!-- 表单 -->
-<form action="" method="post">
+<!-- 登录表单 -->
+<form action="" method="post" onsubmit="return validate()">
     <div class="item firstLine" id="firstLine">
         <span class="login_title">登录</span>
         <span class="login_close" id="close_minilogin">X</span>
     </div>
+	
     <div class="item">
         <label>用户</label>
-        <input type="text" name="uname" />
+        <input type="text" id="uname" />
     </div>
     <div class="item">
         <label>密码</label>
-        <input type="password" name="upwd" />
+        <input type="password" id="pwd" />
     </div>
     <div class="item">
-        <a href="javascript:void(0)" class="btn_login" onclick="">登录</a>
+        <input href="javascript:void(0)"  type = "submit"  value="登录">
     </div>
 </form>
 </div>
 <!-- 遮罩层 -->
 <div class="cover"></div>
+<!-- 弹出排行小窗口 -->
+<div class="mini_rank" id="mini_rank">
+<!-- 排行榜表单 -->
+<form action="" method="post">
+    <div class="item firstLine2" id="firstLine2">
+        <span class="rank_title">排行榜</span>
+        <span class="rank_close" id="close_minirank">X</span>
+    </div>
+    <table width="600" border="1" cellspacing="0">  
+        <thead>  
+         <tr>  
+           <th>排名</th>  
+           <th>ID</th>  
+           <th>分数</th>  
+         </tr>   
+        </thead>  
+      <tbody id="tbRank"></tbody>  
+    </table>  
+</form>
+</div>
+
 </body>
 </html>
